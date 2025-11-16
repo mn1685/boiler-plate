@@ -11,7 +11,8 @@ CaddyWizardAI is an intelligent golf caddie assistant that uses Claude AI to pro
 ### Current Features
 - 🤖 **AI Shot Recommendations**: Get instant club and strategy suggestions using Claude AI, personalized to your club bag
 - 🏌️ **Golf Profile Management**: Save your clubs and average distances for personalized recommendations
-- 📊 **Shot History**: Track and review your past shots and AI recommendations
+- 🌤️ **Weather Integration**: Real-time weather and wind conditions factored into shot recommendations
+- 📊 **Shot History**: Track and review your past shots and AI recommendations with weather data
 - 📈 **Performance Analytics**: Analyze your game with statistics on lie types, distances, and club usage
 - 👤 **User Authentication**: Secure account system with Google OAuth support
 - 💾 **Data Persistence**: MongoDB storage for user profiles and shot history
@@ -20,23 +21,25 @@ CaddyWizardAI is an intelligent golf caddie assistant that uses Claude AI to pro
 - 🏌️ **Round Recording**: Track complete rounds with scorecard integration
 - 📤 **Data Export**: Export your shot history and analytics
 - 🗺️ **Course Integration**: Add satellite imagery and course mapping
-- 🌤️ **Weather Integration**: Factor in wind and weather conditions
 - 📱 **Mobile App**: Native mobile experience
+- 🤝 **Social Features**: Share rounds and compare stats with friends
 
 ## How It Works
 
 1. **Create Profile**: Set up your golf bag with club distances and handicap
-2. **Input Shot Details**: Enter distance to target, current lie, and any obstacles
-3. **AI Analysis**: Claude AI analyzes the scenario using your profile data and generates personalized recommendations
-4. **Get Advice**: Receive club selection (from your bag), strategy, and reasoning
-5. **Track Results**: Record shot outcomes to build your history and analyze performance
+2. **Input Shot Details**: Enter distance to target, current lie, obstacles, and optionally your location
+3. **Weather Analysis**: If location provided, real-time weather data (wind, temperature, humidity) is fetched
+4. **AI Analysis**: Claude AI analyzes the scenario using your profile, weather conditions, and course data
+5. **Get Advice**: Receive club selection (from your bag), strategy adjusted for wind, and reasoning
+6. **Track Results**: Record shot outcomes with weather data to build your history and analyze performance
 
 ## Current Implementation
 
 CaddyWizardAI uses:
 - **Claude AI** (Anthropic) for intelligent shot recommendations
+- **OpenWeatherMap API** for real-time weather and wind data
 - **User profiles** to store club data and preferences
-- **Simple input form** for shot scenarios without requiring GPS or complex data
+- **Simple location-based weather** without requiring GPS hardware
 
 ## Tech Stack
 
@@ -61,7 +64,8 @@ CaddyWizardAI uses:
 ### Prerequisites
 - Node.js 18+
 - MongoDB
-- Claude API key (from Anthropic)
+- Claude API key (from [Anthropic Console](https://console.anthropic.com/))
+- OpenWeatherMap API key (optional - from [OpenWeatherMap](https://openweathermap.org/api))
 
 ### Setup
 
@@ -79,12 +83,13 @@ cd server && npm install && cd ..
 
 3. **Configure environment variables**
 
-Create `.env` file in the server directory:
+Create `.env` file in the server directory (see `server/.env.example`):
 ```env
 MONGODB_URI=mongodb://localhost:27017/caddywizardai
 CLAUDE_KEY=your_claude_api_key
 JWT_SECRET=your_jwt_secret
 FRONTEND_URL=http://localhost:5173
+OPENWEATHER_API_KEY=your_openweather_api_key  # Optional
 ```
 
 4. **Start the application**
@@ -176,9 +181,9 @@ boiler-plate/
 - [ ] Round recording feature
 - [ ] Export shot data
 
-### Phase 3: Advanced Features
+### Phase 3: Advanced Features (In Progress)
+- [x] Weather API integration
 - [ ] GPS integration for course location
-- [ ] Weather API integration
 - [ ] Course database with satellite imagery
 - [ ] Social features (share rounds, compare stats)
 - [ ] Mobile app (React Native)

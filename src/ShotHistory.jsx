@@ -118,6 +118,7 @@ const ShotHistory = () => {
                                     <Th>Date</Th>
                                     <Th isNumeric>Distance</Th>
                                     <Th>Lie</Th>
+                                    <Th>Weather</Th>
                                     <Th>AI Recommended</Th>
                                     <Th>Club Used</Th>
                                     <Th>Outcome</Th>
@@ -142,6 +143,18 @@ const ShotHistory = () => {
                                             <Badge colorScheme={getLieBadgeColor(shot.lie)}>
                                                 {shot.lie}
                                             </Badge>
+                                        </Td>
+                                        <Td>
+                                            {shot.weather ? (
+                                                <Text fontSize="xs">
+                                                    💨 {shot.weather.windSpeed} mph{' '}
+                                                    {shot.weather.windDirection}
+                                                    <br />
+                                                    🌡️ {shot.weather.temperature}°F
+                                                </Text>
+                                            ) : (
+                                                <Text color="gray.400">-</Text>
+                                            )}
                                         </Td>
                                         <Td>
                                             {shot.aiRecommendation?.club || (

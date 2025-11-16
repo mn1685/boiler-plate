@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { authenticateToken, authenticateTokenOptional } from './middleware/auth.js';
 import GolfProfile from './models/GolfProfile.js';
 import Shot from './models/Shot.js';
+import { getWeatherData, formatWeatherForPrompt } from './services/weather.js';
 
 const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_KEY });
 
@@ -43,12 +44,18 @@ const golfRoutes = (app) => {
 
     app.post('/api/golf/recommend', authenticateTokenOptional, async (req, res) => {
         try {
-            const { distance, lie, obstacle } = req.body;
+            const { distance, lie, obstacle, location } = req.body;
 
             // Fetch user's golf profile if authenticated
             let userProfile = null;
             if (req.user) {
                 userProfile = await GolfProfile.findOne({ userId: req.user.id });
+            }
+
+            // Fetch weather data if location provided
+            let weather = null;
+            if (location) {
+                weather = await getWeatherData(location);
             }
 
             // Build prompt with user's club data if available
@@ -65,15 +72,17 @@ const golfRoutes = (app) => {
                     ? `\nHandicap: ${userProfile.handicap}`
                     : '';
 
+            const weatherInfo = formatWeatherForPrompt(weather);
+
             const prompt = `You are an expert golf caddie. A golfer needs advice for the following shot:
 
 Distance to target: ${distance} yards
 Current lie: ${lie}
-${obstacle ? `Obstacles/Hazards: ${obstacle}` : ''}${handicapInfo}${clubInfo}
+${obstacle ? `Obstacles/Hazards: ${obstacle}` : ''}${handicapInfo}${clubInfo}${weatherInfo}
 
 Please provide:
 1. Recommended club${clubInfo ? ' (choose from their bag if possible)' : ''}
-2. Shot strategy
+2. Shot strategy${weatherInfo ? ' (factor in wind and weather conditions)' : ''}
 3. Brief reasoning
 
 Format your response as JSON with keys: club, strategy, reasoning`;
@@ -99,7 +108,10 @@ Format your response as JSON with keys: club, strategy, reasoning`;
                       reasoning: 'AI response parsing failed'
                   };
 
-            res.json(recommendation);
+            res.json({
+                ...recommendation,
+                weather: weather || undefined
+            });
         } catch (error) {
             console.error('Golf recommendation error:', error);
             res.status(500).json({ error: 'Failed to get recommendation' });
@@ -108,7 +120,7 @@ Format your response as JSON with keys: club, strategy, reasoning`;
 
     app.post('/api/golf/shots', authenticateToken, async (req, res) => {
         try {
-            const { distance, lie, obstacle, aiRecommendation, clubUsed, outcome } = req.body;
+            const { distance, lie, obstacle, aiRecommendation, clubUsed, outcome, weather } = req.body;
 
             const shot = new Shot({
                 userId: req.user.id,
@@ -117,7 +129,8 @@ Format your response as JSON with keys: club, strategy, reasoning`;
                 obstacle,
                 aiRecommendation,
                 clubUsed,
-                outcome
+                outcome,
+                weather: weather || undefined
             });
 
             await shot.save();

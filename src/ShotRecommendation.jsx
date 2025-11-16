@@ -19,6 +19,7 @@ const ShotRecommendation = () => {
     const [distance, setDistance] = useState('');
     const [lie, setLie] = useState('fairway');
     const [obstacle, setObstacle] = useState('');
+    const [location, setLocation] = useState('');
     const [recommendation, setRecommendation] = useState(null);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -44,7 +45,7 @@ const ShotRecommendation = () => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify({ distance, lie, obstacle })
+                body: JSON.stringify({ distance, lie, obstacle, location })
             });
             const data = await response.json();
             setRecommendation(data);
@@ -73,9 +74,14 @@ const ShotRecommendation = () => {
                     distance: parseInt(distance),
                     lie,
                     obstacle,
-                    aiRecommendation: recommendation,
+                    aiRecommendation: {
+                        club: recommendation.club,
+                        strategy: recommendation.strategy,
+                        reasoning: recommendation.reasoning
+                    },
                     clubUsed,
-                    outcome
+                    outcome,
+                    weather: recommendation.weather || undefined
                 })
             });
 
@@ -88,6 +94,7 @@ const ShotRecommendation = () => {
             // Reset form
             setDistance('');
             setObstacle('');
+            setLocation('');
             setRecommendation(null);
             setClubUsed('');
             setOutcome('');
@@ -144,6 +151,18 @@ const ShotRecommendation = () => {
                             />
                         </FormControl>
 
+                        <FormControl>
+                            <FormLabel>Location (optional)</FormLabel>
+                            <Input
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                                placeholder="City, State or Zip Code"
+                            />
+                            <Text fontSize="xs" color="gray.500" mt={1}>
+                                Add location to factor in real-time weather and wind conditions
+                            </Text>
+                        </FormControl>
+
                         <Button
                             colorScheme="blue"
                             w="full"
@@ -158,6 +177,28 @@ const ShotRecommendation = () => {
                 {recommendation && (
                     <Box borderWidth="1px" borderRadius="lg" p={6} bg="white" boxShadow="md">
                         <VStack align="stretch" spacing={4}>
+                            {recommendation.weather && (
+                                <Box bg="blue.50" p={4} borderRadius="md" mb={2}>
+                                    <Text fontWeight="bold" mb={2} fontSize="sm">
+                                        Weather Conditions - {recommendation.weather.location}
+                                    </Text>
+                                    <VStack align="stretch" spacing={1} fontSize="sm">
+                                        <Text>
+                                            🌡️ {recommendation.weather.temperature}°F (feels like{' '}
+                                            {recommendation.weather.feelsLike}°F)
+                                        </Text>
+                                        <Text>
+                                            💨 Wind: {recommendation.weather.windSpeed} mph from{' '}
+                                            {recommendation.weather.windDirection}
+                                            {recommendation.weather.windGust &&
+                                                ` (gusts ${recommendation.weather.windGust} mph)`}
+                                        </Text>
+                                        <Text>☁️ {recommendation.weather.description}</Text>
+                                        <Text>💧 Humidity: {recommendation.weather.humidity}%</Text>
+                                    </VStack>
+                                </Box>
+                            )}
+
                             <Box>
                                 <Text fontSize="sm" color="gray.600" mb={1}>
                                     Recommended Club

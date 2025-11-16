@@ -25,7 +25,18 @@ const shotSchema = new mongoose.Schema(
             reasoning: String
         },
         clubUsed: String,
-        outcome: String
+        outcome: String,
+        weather: {
+            temperature: Number,
+            feelsLike: Number,
+            humidity: Number,
+            windSpeed: Number,
+            windDirection: String,
+            windGust: Number,
+            conditions: String,
+            description: String,
+            location: String
+        }
     },
     { timestamps: true }
 );
