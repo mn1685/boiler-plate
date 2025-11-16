@@ -12,6 +12,7 @@ import Forgot from './Forgot';
 import Reset from './Reset';
 import Profile from './Profile';
 import { BottomNavigationBar } from './BottomNavigationBar';
+import ShotRecommendation from './ShotRecommendation';
 
 const Admin = lazy(() => import('./Admin'));
 const Feedback = lazy(() => import('./Feedback'));
@@ -82,7 +83,8 @@ function App() {
                                         <Routes>
                                             <Route path="/" element={<Landing />} />
                                             <Route path="/research" element={<Landing />} />
-                                            
+                                            <Route path="/shot" element={<ShotRecommendation />} />
+
                                             <Route path="/privacy" element={<Privacy />} />
                                             <Route path="/terms" element={<Terms />} />
                                             <Route path="/login" element={<Login />} />
