@@ -21,6 +21,9 @@ const ShotRecommendation = () => {
     const [obstacle, setObstacle] = useState('');
     const [recommendation, setRecommendation] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [clubUsed, setClubUsed] = useState('');
+    const [outcome, setOutcome] = useState('');
     const toast = useToast();
 
     const getRecommendation = async () => {
@@ -54,6 +57,49 @@ const ShotRecommendation = () => {
             });
         } finally {
             setLoading(false);
+        }
+    };
+
+    const saveShot = async () => {
+        setSaving(true);
+        try {
+            await fetch(`${API_URL}/api/golf/shots`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                    distance: parseInt(distance),
+                    lie,
+                    obstacle,
+                    aiRecommendation: recommendation,
+                    clubUsed,
+                    outcome
+                })
+            });
+
+            toast({
+                title: 'Shot saved!',
+                status: 'success',
+                duration: 3000
+            });
+
+            // Reset form
+            setDistance('');
+            setObstacle('');
+            setRecommendation(null);
+            setClubUsed('');
+            setOutcome('');
+        } catch (error) {
+            toast({
+                title: 'Error saving shot',
+                description: error.message,
+                status: 'error',
+                duration: 3000
+            });
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -133,6 +179,41 @@ const ShotRecommendation = () => {
                                     AI Analysis:
                                 </Text>
                                 <Text fontSize="sm">{recommendation.reasoning}</Text>
+                            </Box>
+
+                            <Box borderTop="1px" borderColor="gray.200" pt={4}>
+                                <Text fontWeight="bold" mb={3}>
+                                    Record Your Shot (Optional)
+                                </Text>
+                                <VStack spacing={3}>
+                                    <FormControl>
+                                        <FormLabel fontSize="sm">Club Actually Used</FormLabel>
+                                        <Input
+                                            value={clubUsed}
+                                            onChange={(e) => setClubUsed(e.target.value)}
+                                            placeholder="e.g., 7-Iron"
+                                        />
+                                    </FormControl>
+
+                                    <FormControl>
+                                        <FormLabel fontSize="sm">Outcome</FormLabel>
+                                        <Textarea
+                                            value={outcome}
+                                            onChange={(e) => setOutcome(e.target.value)}
+                                            placeholder="e.g., Hit green, 15 feet from pin"
+                                            rows={2}
+                                        />
+                                    </FormControl>
+
+                                    <Button
+                                        colorScheme="green"
+                                        w="full"
+                                        onClick={saveShot}
+                                        isLoading={saving}
+                                    >
+                                        Save to History
+                                    </Button>
+                                </VStack>
                             </Box>
                         </VStack>
                     </Box>
