@@ -1,9 +1,9 @@
 {
-    "name": "boiler",
+    "name": "caddywizardai",
     "version": "1.0.0",
     "private": true,
     "type": "module",
-    "description": "Boiler",
+    "description": "CaddyWizardAI",
     "scripts": {
         "dev": "vite",
         "build": "vite build",

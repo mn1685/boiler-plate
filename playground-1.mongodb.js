@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* global use, db */
 
-use('boiler');
+use('caddywizardai');
 
 db.users.updateOne(
     { email: 'msveshnikov@gmail.com' },

@@ -82,7 +82,7 @@ export default function Navbar() {
                 <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }} align="center">
                     <Image
                         src={logo}
-                        alt="Boiler.pro Logo"
+                        alt="CaddyWizardAI Logo"
                         h="40px"
                         mr={3}
                         cursor="pointer"

@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
     backend:
-        image: extender777/boiler
+        image: extender777/caddywizardai
         ports:
             - '8045:3000'
         environment:
@@ -15,7 +15,7 @@ services:
             - UNSPLASH_API_KEY=${UNSPLASH_API_KEY}
             - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
             - GA_API_SECRET=${GA_API_SECRET}
-            - MONGODB_URI=mongodb://mongodb:27017/boiler
+            - MONGODB_URI=mongodb://mongodb:27017/caddywizardai
             - STRIPE_KEY=${STRIPE_KEY}
             - STRIPE_WH_SECRET=${STRIPE_WH_SECRET}
             - JWT_SECRET=${JWT_SECRET}

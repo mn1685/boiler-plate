@@ -412,12 +412,12 @@ app.get('/sitemap.xml', async (req, res) => {
         ];
 
         let urls = staticRoutes
-            .map((route) => `<url><loc>https://Boiler.pro${route}</loc></url>`)
+            .map((route) => `<url><loc>https://caddywizardai.com${route}</loc></url>`)
             .join('');
 
         presentations.forEach((p) => {
             if (p.slug) {
-                urls += `<url><loc>https://Boiler.pro/presentation/${p.slug}</loc></url>`;
+                urls += `<url><loc>https://caddywizardai.com/presentation/${p.slug}</loc></url>`;
             }
         });
 
