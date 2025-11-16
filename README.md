@@ -1,128 +1,193 @@
 # CaddyWizardAI
 
-Use PGA Tour Strokes Gained data to give advice on specific golf shot scenarios overlayed with satellite imagery and GPS data.
+AI-powered golf caddie assistant providing instant shot recommendations and club selection advice.
 
 ## Overview
 
-CaddyWizardAI is an intelligent golf caddie assistant that combines professional-level PGA Tour strokes gained analytics with real-time GPS positioning and satellite imagery to provide data-driven shot recommendations. Think of it as having a professional caddie with access to millions of PGA Tour shots in your pocket.
+CaddyWizardAI is an intelligent golf caddie assistant that uses Claude AI to provide data-driven shot recommendations. Simply input your shot scenario (distance, lie, obstacles) and get expert caddie advice powered by artificial intelligence.
 
 ## Features
 
 ### Current Features
-- 🚧 Project in early development
+- 🤖 **AI Shot Recommendations**: Get instant club and strategy suggestions using Claude AI
+- 🏌️ **Golf Profile Management**: Save your clubs and average distances for personalized tracking
+- 📊 **Shot Scenarios**: Input distance, lie type, and obstacles for tailored advice
+- 👤 **User Authentication**: Secure account system with Google OAuth support
+- 💾 **Data Persistence**: MongoDB storage for user profiles and shot history
 
 ### Planned Features
-- 📊 **Strokes Gained Analysis**: Leverage PGA Tour ShotLink data to understand performance metrics
-- 🗺️ **Satellite Imagery Overlay**: Visualize course layout, hazards, and target areas
-- 📍 **GPS Integration**: Precise location tracking for accurate yardage and positioning
-- 🎯 **Shot Recommendations**: AI-powered suggestions based on:
-  - Current lie position
-  - Distance to target
-  - Course conditions
-  - Historical strokes gained data
-  - Risk/reward analysis
-- 📈 **Performance Tracking**: Track your own strokes gained over time
-- 🏌️ **Club Selection**: Optimal club recommendations based on situation and statistics
-- 🌤️ **Weather Integration**: Factor in wind, temperature, and weather conditions
+- 📈 **Shot History**: Track your shots and outcomes over time
+- 📊 **Performance Analytics**: Analyze your game improvement
+- 🗺️ **Course Integration**: Add satellite imagery and course mapping
+- 🌤️ **Weather Integration**: Factor in wind and weather conditions
+- 📱 **Mobile App**: Native mobile experience
 
 ## How It Works
 
-1. **Location Detection**: GPS determines your exact position on the course
-2. **Course Mapping**: Satellite imagery provides visual context of the hole
-3. **Data Analysis**: Strokes gained data from similar PGA Tour shots is analyzed
-4. **Shot Recommendation**: AI recommends the optimal shot strategy
-5. **Outcome Tracking**: Record results to build your personal performance database
+1. **Create Profile**: Set up your golf bag with club distances and handicap
+2. **Input Shot Details**: Enter distance to target, current lie, and any obstacles
+3. **AI Analysis**: Claude AI analyzes the scenario and generates recommendations
+4. **Get Advice**: Receive club selection, strategy, and reasoning
+5. **Track Results**: (Coming soon) Record outcomes to build your history
 
-## Data Sources
+## Current Implementation
 
-- **PGA Tour ShotLink**: Professional shot-by-shot data and strokes gained analytics
-- **Satellite Imagery**: High-resolution course imagery (Google Maps API, Mapbox, etc.)
-- **GPS**: Device location services for precise positioning
-- **Weather APIs**: Real-time weather and wind data
+CaddyWizardAI uses:
+- **Claude AI** (Anthropic) for intelligent shot recommendations
+- **User profiles** to store club data and preferences
+- **Simple input form** for shot scenarios without requiring GPS or complex data
 
 ## Tech Stack
 
-*To be determined - Considerations:*
+**Frontend:**
+- React 19 with Vite
+- Chakra UI for components
+- React Router for navigation
 
-- **Frontend**: React Native / Flutter (mobile app) or React (web)
-- **Backend**: Node.js / Python (Django/Flask) / Go
-- **Database**: PostgreSQL (geospatial data) with PostGIS extension
-- **AI/ML**: TensorFlow / PyTorch for recommendation engine
-- **Mapping**: Mapbox / Google Maps API
-- **APIs**:
-  - PGA Tour API (or scraped data)
-  - Weather API (OpenWeatherMap, Weather.gov)
-  - GPS/Location services
+**Backend:**
+- Node.js with Express
+- MongoDB with Mongoose ODM
+- JWT authentication
+- Anthropic Claude AI API
+
+**Infrastructure:**
+- Docker & Docker Compose
+- MongoDB container
+- Sentry for error tracking
 
 ## Installation
 
+### Prerequisites
+- Node.js 18+
+- MongoDB
+- Claude API key (from Anthropic)
+
+### Setup
+
+1. **Clone the repository**
 ```bash
-# Project setup instructions will be added as development progresses
-git clone https://github.com/yourusername/CaddyWizardAI.git
-cd CaddyWizardAI
-# npm install or pip install -r requirements.txt
+git clone https://github.com/mn1685/boiler-plate.git
+cd boiler-plate
+```
+
+2. **Install dependencies**
+```bash
+npm install
+cd server && npm install && cd ..
+```
+
+3. **Configure environment variables**
+
+Create `.env` file in the server directory:
+```env
+MONGODB_URI=mongodb://localhost:27017/caddywizardai
+CLAUDE_KEY=your_claude_api_key
+JWT_SECRET=your_jwt_secret
+FRONTEND_URL=http://localhost:5173
+```
+
+4. **Start the application**
+
+Development mode:
+```bash
+# Terminal 1 - Backend
+cd server
+npm run dev
+
+# Terminal 2 - Frontend
+npm run dev
+```
+
+Using Docker:
+```bash
+docker-compose up
 ```
 
 ## Usage
 
-```bash
-# Usage examples will be added as features are developed
-```
+1. **Sign up** at `/signup` or use Google OAuth
+2. **Set up your golf profile** at `/golf-profile`:
+   - Add your clubs (Driver, irons, wedges, etc.)
+   - Enter average distances for each club
+   - Optional: Add your handicap
+3. **Get shot recommendations** at `/shot`:
+   - Enter distance to target
+   - Select your lie (tee, fairway, rough, sand, etc.)
+   - Describe any obstacles or hazards
+   - Click "Get AI Recommendation"
+4. **Review the AI advice**: Club selection, strategy, and reasoning
 
 ## Architecture
 
 ```
-┌─────────────────┐
-│   Mobile App    │
-│   (Frontend)    │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│   API Gateway   │
-└────────┬────────┘
-         │
-    ┌────┴────┬──────────┬───────────┐
-    ▼         ▼          ▼           ▼
-┌────────┐ ┌──────┐ ┌────────┐ ┌─────────┐
-│ Shot   │ │ GPS  │ │ Course │ │ Weather │
-│ Advisor│ │Service│ │ Maps   │ │ Service │
-└────────┘ └──────┘ └────────┘ └─────────┘
-    │
-    ▼
-┌─────────────────┐
-│   Database      │
-│ (PGA Data +     │
-│  User Stats)    │
-└─────────────────┘
+┌─────────────────────┐
+│   React Frontend    │
+│   (Vite + Chakra)   │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│  Express API Server │
+│    (Node.js)        │
+└──────────┬──────────┘
+           │
+    ┌──────┴──────┬──────────────┐
+    ▼             ▼              ▼
+┌─────────┐  ┌──────────┐  ┌──────────┐
+│ MongoDB │  │ Claude   │  │   Auth   │
+│Database │  │   AI     │  │  (JWT)   │
+└─────────┘  └──────────┘  └──────────┘
+```
+
+## Project Structure
+
+```
+boiler-plate/
+├── src/                    # React frontend
+│   ├── App.jsx            # Main app component
+│   ├── ShotRecommendation.jsx  # Shot advice UI
+│   ├── GolfProfile.jsx    # Profile management
+│   └── ...
+├── server/                # Node.js backend
+│   ├── index.js          # Express server
+│   ├── golf.js           # Golf recommendation routes
+│   ├── models/           # MongoDB models
+│   │   ├── Shot.js
+│   │   ├── GolfProfile.js
+│   │   └── User.js
+│   └── middleware/       # Auth middleware
+└── docker-compose.yml    # Container configuration
 ```
 
 ## Development Roadmap
 
-### Phase 1: MVP
-- [ ] Set up project structure and tech stack
-- [ ] Implement basic GPS location detection
-- [ ] Integrate satellite imagery display
-- [ ] Create simple distance calculator
-- [ ] Build basic UI/UX
+### Phase 1: Core Features ✅
+- [x] Set up project structure and tech stack
+- [x] Implement AI shot recommendations
+- [x] Build golf profile system
+- [x] User authentication with JWT
+- [x] Basic UI/UX with Chakra
 
-### Phase 2: Data Integration
-- [ ] Acquire and structure PGA Tour strokes gained data
-- [ ] Build database schema for shot data
-- [ ] Implement course mapping system
-- [ ] Add weather API integration
+### Phase 2: Enhanced Features (In Progress)
+- [ ] Shot history tracking
+- [ ] Performance analytics dashboard
+- [ ] Club recommendations based on user's bag
+- [ ] Round recording feature
+- [ ] Export shot data
 
-### Phase 3: Intelligence
-- [ ] Develop shot recommendation algorithm
-- [ ] Train ML model on PGA Tour data
-- [ ] Implement club selection logic
-- [ ] Add risk/reward analysis
+### Phase 3: Advanced Features
+- [ ] GPS integration for course location
+- [ ] Weather API integration
+- [ ] Course database with satellite imagery
+- [ ] Social features (share rounds, compare stats)
+- [ ] Mobile app (React Native)
 
-### Phase 4: User Features
-- [ ] User profile and stat tracking
-- [ ] Round recording and history
-- [ ] Personal strokes gained tracking
-- [ ] Social features and sharing
+### Phase 4: Pro Features
+- [ ] PGA Tour strokes gained data integration
+- [ ] Advanced analytics and trends
+- [ ] Handicap tracking and improvement insights
+- [ ] Tournament mode
+- [ ] AI coaching tips
 
 ## Contributing
 
@@ -134,18 +199,45 @@ Contributions are welcome! This project is in early development.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/signup` - Create new account
+- `POST /api/auth/login` - Login with credentials
+- `POST /api/auth/google` - Google OAuth login
+- `GET /api/profile` - Get user profile
+
+### Golf Features
+- `GET /api/golf/profile` - Get user's golf profile
+- `POST /api/golf/profile` - Save/update golf profile
+- `POST /api/golf/recommend` - Get AI shot recommendation
+
+### Request Example
+```bash
+curl -X POST http://localhost:3000/api/golf/recommend \
+  -H "Content-Type: application/json" \
+  -d '{
+    "distance": 150,
+    "lie": "fairway",
+    "obstacle": "Water hazard 20 yards ahead"
+  }'
+```
+
 ## Data Privacy
 
 CaddyWizardAI respects user privacy:
-- Location data is only used for shot recommendations
-- Personal statistics remain private by default
+- User data is encrypted and stored securely in MongoDB
+- AI recommendations are processed via Anthropic's Claude API
+- Personal golf profiles and statistics remain private
 - No data is shared with third parties without consent
+- Optional Google OAuth for convenient authentication
 
 ## License
 
-[Choose appropriate license - MIT, Apache 2.0, GPL, etc.]
+MIT License - See LICENSE file for details
 
 ## Acknowledgments
 
-- PGA Tour for strokes gained methodology
-- Golf data community and contributors
+- Anthropic for Claude AI API
+- Golf community for feedback and support
+- Open source contributors
