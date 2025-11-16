@@ -21,6 +21,7 @@ import Feedback from './models/Feedback.js';
 import { replaceGraphics } from './imageService.js';
 import userRoutes from './user.js';
 import adminRoutes from './admin.js';
+import golfRoutes from './golf.js';
 import { authenticateToken, authenticateTokenOptional } from './middleware/auth.js';
 import { fetchSearchResults, searchWebContent } from './search.js';
 import { enrichMetadata } from './utils.js';
@@ -73,6 +74,7 @@ mongoose.connect(process.env.MONGODB_URI, {});
 
 userRoutes(app);
 adminRoutes(app);
+golfRoutes(app);
 
 const generateAIResponse = async (prompt, model, temperature = 0.7) => {
     switch (model) {

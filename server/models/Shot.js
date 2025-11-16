@@ -7,49 +7,29 @@ const shotSchema = new mongoose.Schema(
             ref: 'User',
             required: true
         },
-        location: {
-            type: {
-                type: String,
-                enum: ['Point'],
-                default: 'Point'
-            },
-            coordinates: {
-                type: [Number], // [longitude, latitude]
-                required: true
-            }
-        },
-        distanceToTarget: {
+        distance: {
             type: Number, // in yards
             required: true
         },
         lie: {
             type: String,
-            enum: ['fairway', 'rough', 'sand', 'tee', 'green'],
+            enum: ['fairway', 'rough', 'sand', 'tee', 'green', 'bunker'],
             required: true
         },
-        clubUsed: {
-            type: String,
-            required: true
+        obstacle: {
+            type: String, // water, trees, bunker, etc.
         },
-        outcome: {
-            distanceAchieved: Number,
-            accuracy: String, // 'left', 'right', 'center'
-            strokesGained: Number
+        aiRecommendation: {
+            club: String,
+            strategy: String,
+            reasoning: String
         },
-        weather: {
-            windSpeed: Number, // mph
-            windDirection: Number, // degrees
-            temperature: Number // fahrenheit
-        },
-        timestamp: {
-            type: Date,
-            default: Date.now
-        }
+        clubUsed: String,
+        outcome: String
     },
     { timestamps: true }
 );
 
-shotSchema.index({ location: '2dsphere' });
-shotSchema.index({ userId: 1, timestamp: -1 });
+shotSchema.index({ userId: 1, createdAt: -1 });
 
 export default mongoose.model('Shot', shotSchema);
