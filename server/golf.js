@@ -1,9 +1,45 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { authenticateTokenOptional } from './middleware/auth.js';
+import { authenticateToken, authenticateTokenOptional } from './middleware/auth.js';
+import GolfProfile from './models/GolfProfile.js';
 
 const anthropic = new Anthropic({ apiKey: process.env.CLAUDE_KEY });
 
 const golfRoutes = (app) => {
+    app.get('/api/golf/profile', authenticateToken, async (req, res) => {
+        try {
+            const profile = await GolfProfile.findOne({ userId: req.user.id });
+            if (!profile) {
+                return res.json({ clubs: [], handicap: null, preferredHand: 'right' });
+            }
+            res.json(profile);
+        } catch (error) {
+            console.error('Error fetching golf profile:', error);
+            res.status(500).json({ error: 'Failed to fetch profile' });
+        }
+    });
+
+    app.post('/api/golf/profile', authenticateToken, async (req, res) => {
+        try {
+            const { clubs, handicap, preferredHand } = req.body;
+
+            const profile = await GolfProfile.findOneAndUpdate(
+                { userId: req.user.id },
+                {
+                    userId: req.user.id,
+                    clubs,
+                    handicap,
+                    preferredHand
+                },
+                { upsert: true, new: true }
+            );
+
+            res.json(profile);
+        } catch (error) {
+            console.error('Error saving golf profile:', error);
+            res.status(500).json({ error: 'Failed to save profile' });
+        }
+    });
+
     app.post('/api/golf/recommend', authenticateTokenOptional, async (req, res) => {
         try {
             const { distance, lie, obstacle } = req.body;
