@@ -9,15 +9,16 @@ CaddyWizardAI is an intelligent golf caddie assistant that uses Claude AI to pro
 ## Features
 
 ### Current Features
-- 🤖 **AI Shot Recommendations**: Get instant club and strategy suggestions using Claude AI
-- 🏌️ **Golf Profile Management**: Save your clubs and average distances for personalized tracking
-- 📊 **Shot Scenarios**: Input distance, lie type, and obstacles for tailored advice
+- 🤖 **AI Shot Recommendations**: Get instant club and strategy suggestions using Claude AI, personalized to your club bag
+- 🏌️ **Golf Profile Management**: Save your clubs and average distances for personalized recommendations
+- 📊 **Shot History**: Track and review your past shots and AI recommendations
+- 📈 **Performance Analytics**: Analyze your game with statistics on lie types, distances, and club usage
 - 👤 **User Authentication**: Secure account system with Google OAuth support
 - 💾 **Data Persistence**: MongoDB storage for user profiles and shot history
 
 ### Planned Features
-- 📈 **Shot History**: Track your shots and outcomes over time
-- 📊 **Performance Analytics**: Analyze your game improvement
+- 🏌️ **Round Recording**: Track complete rounds with scorecard integration
+- 📤 **Data Export**: Export your shot history and analytics
 - 🗺️ **Course Integration**: Add satellite imagery and course mapping
 - 🌤️ **Weather Integration**: Factor in wind and weather conditions
 - 📱 **Mobile App**: Native mobile experience
@@ -26,9 +27,9 @@ CaddyWizardAI is an intelligent golf caddie assistant that uses Claude AI to pro
 
 1. **Create Profile**: Set up your golf bag with club distances and handicap
 2. **Input Shot Details**: Enter distance to target, current lie, and any obstacles
-3. **AI Analysis**: Claude AI analyzes the scenario and generates recommendations
-4. **Get Advice**: Receive club selection, strategy, and reasoning
-5. **Track Results**: (Coming soon) Record outcomes to build your history
+3. **AI Analysis**: Claude AI analyzes the scenario using your profile data and generates personalized recommendations
+4. **Get Advice**: Receive club selection (from your bag), strategy, and reasoning
+5. **Track Results**: Record shot outcomes to build your history and analyze performance
 
 ## Current Implementation
 
@@ -169,9 +170,9 @@ boiler-plate/
 - [x] Basic UI/UX with Chakra
 
 ### Phase 2: Enhanced Features (In Progress)
-- [ ] Shot history tracking
-- [ ] Performance analytics dashboard
-- [ ] Club recommendations based on user's bag
+- [x] Shot history tracking
+- [x] Performance analytics dashboard
+- [x] Club recommendations based on user's bag
 - [ ] Round recording feature
 - [ ] Export shot data
 
@@ -210,7 +211,11 @@ Contributions are welcome! This project is in early development.
 ### Golf Features
 - `GET /api/golf/profile` - Get user's golf profile
 - `POST /api/golf/profile` - Save/update golf profile
-- `POST /api/golf/recommend` - Get AI shot recommendation
+- `POST /api/golf/recommend` - Get AI shot recommendation (personalized with user's club data if authenticated)
+- `POST /api/golf/shots` - Save shot to history
+- `GET /api/golf/shots` - Get user's shot history
+- `DELETE /api/golf/shots/:id` - Delete a shot from history
+- `GET /api/golf/analytics` - Get performance analytics and statistics
 
 ### Request Example
 ```bash

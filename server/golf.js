@@ -45,14 +45,34 @@ const golfRoutes = (app) => {
         try {
             const { distance, lie, obstacle } = req.body;
 
+            // Fetch user's golf profile if authenticated
+            let userProfile = null;
+            if (req.user) {
+                userProfile = await GolfProfile.findOne({ userId: req.user.id });
+            }
+
+            // Build prompt with user's club data if available
+            let clubInfo = '';
+            if (userProfile && userProfile.clubs && userProfile.clubs.length > 0) {
+                const clubList = userProfile.clubs
+                    .map((c) => `${c.club}: ${c.avgDistance} yards`)
+                    .join('\n');
+                clubInfo = `\n\nGolfer's club bag and average distances:\n${clubList}`;
+            }
+
+            const handicapInfo =
+                userProfile && userProfile.handicap
+                    ? `\nHandicap: ${userProfile.handicap}`
+                    : '';
+
             const prompt = `You are an expert golf caddie. A golfer needs advice for the following shot:
 
 Distance to target: ${distance} yards
 Current lie: ${lie}
-${obstacle ? `Obstacles/Hazards: ${obstacle}` : ''}
+${obstacle ? `Obstacles/Hazards: ${obstacle}` : ''}${handicapInfo}${clubInfo}
 
 Please provide:
-1. Recommended club
+1. Recommended club${clubInfo ? ' (choose from their bag if possible)' : ''}
 2. Shot strategy
 3. Brief reasoning
 
