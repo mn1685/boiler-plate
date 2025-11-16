@@ -139,6 +139,71 @@ Format your response as JSON with keys: club, strategy, reasoning`;
             res.status(500).json({ error: 'Failed to delete shot' });
         }
     });
+
+    app.get('/api/golf/analytics', authenticateToken, async (req, res) => {
+        try {
+            const shots = await Shot.find({ userId: req.user.id });
+
+            // Basic stats
+            const totalShots = shots.length;
+
+            // Shots by lie type
+            const shotsByLie = shots.reduce((acc, shot) => {
+                acc[shot.lie] = (acc[shot.lie] || 0) + 1;
+                return acc;
+            }, {});
+
+            // Average distance by lie
+            const distanceByLie = shots.reduce((acc, shot) => {
+                if (!acc[shot.lie]) {
+                    acc[shot.lie] = { total: 0, count: 0 };
+                }
+                acc[shot.lie].total += shot.distance;
+                acc[shot.lie].count += 1;
+                return acc;
+            }, {});
+
+            const avgDistanceByLie = Object.keys(distanceByLie).reduce((acc, lie) => {
+                acc[lie] = Math.round(distanceByLie[lie].total / distanceByLie[lie].count);
+                return acc;
+            }, {});
+
+            // Most recommended clubs
+            const clubRecommendations = shots
+                .filter((s) => s.aiRecommendation?.club)
+                .reduce((acc, shot) => {
+                    const club = shot.aiRecommendation.club;
+                    acc[club] = (acc[club] || 0) + 1;
+                    return acc;
+                }, {});
+
+            // Most used clubs
+            const clubsUsed = shots
+                .filter((s) => s.clubUsed)
+                .reduce((acc, shot) => {
+                    acc[shot.clubUsed] = (acc[shot.clubUsed] || 0) + 1;
+                    return acc;
+                }, {});
+
+            // Recent activity (last 7 days)
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            const recentShots = shots.filter((s) => new Date(s.createdAt) >= sevenDaysAgo);
+
+            res.json({
+                totalShots,
+                shotsByLie,
+                avgDistanceByLie,
+                clubRecommendations,
+                clubsUsed,
+                recentShots: recentShots.length,
+                hasData: totalShots > 0
+            });
+        } catch (error) {
+            console.error('Error fetching analytics:', error);
+            res.status(500).json({ error: 'Failed to fetch analytics' });
+        }
+    });
 };
 
 export default golfRoutes;

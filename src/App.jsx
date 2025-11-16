@@ -15,6 +15,7 @@ import { BottomNavigationBar } from './BottomNavigationBar';
 import ShotRecommendation from './ShotRecommendation';
 import GolfProfile from './GolfProfile';
 import ShotHistory from './ShotHistory';
+import Analytics from './Analytics';
 
 const Admin = lazy(() => import('./Admin'));
 const Feedback = lazy(() => import('./Feedback'));
@@ -88,6 +89,7 @@ function App() {
                                             <Route path="/shot" element={<ShotRecommendation />} />
                                             <Route path="/golf-profile" element={<GolfProfile />} />
                                             <Route path="/shot-history" element={<ShotHistory />} />
+                                            <Route path="/analytics" element={<Analytics />} />
 
                                             <Route path="/privacy" element={<Privacy />} />
                                             <Route path="/terms" element={<Terms />} />
